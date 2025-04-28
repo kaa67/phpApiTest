@@ -1,0 +1,13 @@
+{
+    "require": {
+        "httpsoft/http-message": "^1.1",
+        "httpsoft/http-server-request": "^1.1",
+        "httpsoft/http-runner": "^1.1",
+        "httpsoft/http-response": "^1.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Sys\\": "vendor/kaa/src/"
+        }
+    }
+}
