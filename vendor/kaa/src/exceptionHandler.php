@@ -4,10 +4,24 @@ declare(strict_types=1);
 
 error_reporting(E_ALL);
 
+function logger(Throwable $e)
+{
+    $logFile = '../storage/logs/error.log';
+
+    $str = date('d.m.y H:i:s') 
+        . ' "' . $e->getMessage()
+        . '" file: ' . $e->getFile()
+        . ' line: ' . $e->getLine()
+        . PHP_EOL;
+
+    file_put_contents($logFile, $str, FILE_APPEND);
+}
+
 function myExceptionHandler ($e)
 {
-    // error_log($e);
+    logger($e);
     http_response_code(500);
+
     if (filter_var(ini_get('display_errors'),FILTER_VALIDATE_BOOLEAN)) {
         if (accept('Accept', 'text/html') == 1) {
             var_dump($e);
@@ -25,6 +39,7 @@ function myExceptionHandler ($e)
               An internal server error has been occurred.<br>
               Please try again later.";
     }
+
     exit;
 }
 
