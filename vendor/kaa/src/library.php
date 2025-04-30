@@ -14,6 +14,19 @@ function dd(...$values)
     exit;
 }
 
+function logger(Throwable $e)
+{
+    $logFile = '../storage/logs/error.log';
+
+    $str = date('d.m.y H:i:s') 
+        . ' "' . $e->getMessage()
+        . '" file: ' . $e->getFile()
+        . ' line: ' . $e->getLine()
+        . PHP_EOL;
+
+    file_put_contents($logFile, $str, FILE_APPEND);
+}
+
 function accept(string $headerKey, ?string $part = null): float|array
 {
     function quality(string $header)

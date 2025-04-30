@@ -4,19 +4,6 @@ declare(strict_types=1);
 
 error_reporting(E_ALL);
 
-function logger(Throwable $e)
-{
-    $logFile = '../storage/logs/error.log';
-
-    $str = date('d.m.y H:i:s') 
-        . ' "' . $e->getMessage()
-        . '" file: ' . $e->getFile()
-        . ' line: ' . $e->getLine()
-        . PHP_EOL;
-
-    file_put_contents($logFile, $str, FILE_APPEND);
-}
-
 function myExceptionHandler ($e)
 {
     logger($e);
