@@ -4,9 +4,22 @@ declare(strict_types=1);
 
 error_reporting(E_ALL);
 
+function errorLogger(Throwable $e)
+{
+    $logFile = '../storage/logs/error.log';
+
+    $str = date('d.m.y H:i:s') 
+        . ' "' . $e->getMessage()
+        . '" file: ' . $e->getFile()
+        . ' line: ' . $e->getLine()
+        . PHP_EOL;
+
+    file_put_contents($logFile, $str, FILE_APPEND);
+}
+
 function myExceptionHandler ($e)
 {
-    logger($e);
+    errorLogger($e);
     http_response_code(500);
 
     if (filter_var(ini_get('display_errors'),FILTER_VALIDATE_BOOLEAN)) {
