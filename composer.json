@@ -3,7 +3,8 @@
         "httpsoft/http-message": "^1.1",
         "httpsoft/http-server-request": "^1.1",
         "httpsoft/http-runner": "^1.1",
-        "httpsoft/http-response": "^1.1"
+        "httpsoft/http-response": "^1.1",
+        "php-di/php-di": "^7.0"
     },
     "autoload": {
         "psr-4": {
