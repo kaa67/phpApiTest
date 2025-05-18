@@ -8,7 +8,8 @@
     },
     "autoload": {
         "psr-4": {
-            "Sys\\": "vendor/kaa/src/"
+            "Sys\\": "vendor/kaa/src/",
+            "Az\\Route\\": "vendor/route/src"
         }
     }
 }

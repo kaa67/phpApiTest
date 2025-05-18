@@ -22,7 +22,9 @@ class RouteMiddleware implements MiddlewareInterface
         $action = 'getAnything';
         $params = [];
 
-        $response = $this->container->call([$controller, $action], $params);
+        $response = call_user_func_array([$controller, $action], $params);
+
+        // $response = $this->container->call([$controller, $action], $params);
 
         return new JsonResponse($response);
     }

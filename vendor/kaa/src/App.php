@@ -16,7 +16,7 @@ class App
     public function __construct(
         private ServerRequestInterface $request,
         private Pipeline $pipeline,
-        private EmitterInterface $emitter,
+        // private EmitterInterface $emitter,
         private DefaultHandler $defaultHandler
     ){}
 
@@ -26,6 +26,18 @@ class App
         $this->pipeline->pipe(RouteMiddleware::class);
 
         $response = $this->pipeline->process($this->request, $this->defaultHandler);
-        $this->emitter->emit($response);
+
+        foreach ($response->getHeaders() as $name => $values) {
+            $name = str_replace(' ', '-', ucwords(strtolower(str_replace('-', ' ', (string) $name))));
+            $firstReplace = !($name === 'Set-Cookie');
+
+            foreach ($values as $value) {
+                header("$name: $value", $firstReplace);
+                $firstReplace = false;
+            }
+        }
+
+        echo $response->getBody();
+        // $this->emitter->emit($response);
     }
 }

@@ -1,6 +1,7 @@
 <?php
 
 define('VENDOR', '../vendor/');
+define('APPPATH', '../application/');
 
 require VENDOR . 'autoload.php';
 require '../autoload.php';
