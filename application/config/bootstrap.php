@@ -7,3 +7,5 @@ require VENDOR . 'autoload.php';
 require '../autoload.php';
 require VENDOR . 'kaa/src/library.php';
 require VENDOR . 'kaa/src/exceptionHandler.php';
+
+define('ROUTES_PATH', APPPATH . 'config/routes.php');

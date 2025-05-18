@@ -1,5 +1,9 @@
 <?php declare(strict_types=1);
 
+use Az\Route\Middleware\RouteDispatch;
+use Az\Route\Middleware\RouteMatch;
+use Az\Route\Router;
+use Az\Route\RouterInterface;
 use Controller\Home;
 use Psr\Http\Message\ServerRequestInterface;
 use HttpSoft\ServerRequest\ServerRequestCreator;
@@ -33,4 +37,8 @@ return [
     Home::class => fn() => new Home($this->get(RepoInterface::class)),
     // Repo1::class => fn() => new Repo1,
     RepoInterface::class => fn() => new Repo2($this->get(Repo1::class)),
+
+    RouterInterface::class => fn() => new Router(ROUTES_PATH),
+    RouteMatch::class => fn() => new RouteMatch($this->get(RouterInterface::class)),
+    RouteDispatch::class => fn() => new RouteDispatch($this),
 ];

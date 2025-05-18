@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Sys;
 
+use Az\Route\Middleware\RouteDispatch;
+use Az\Route\Middleware\RouteMatch;
 use Middleware\CORS;
-use Middleware\RouteMiddleware;
+// use Middleware\RouteMiddleware;
 use Sys\DefaultHandler;
 use Sys\Pipeline\Pipeline;
 use HttpSoft\Emitter\EmitterInterface;
@@ -23,7 +25,9 @@ class App
     public function run()
     {
         $this->pipeline->pipe(CORS::class);
-        $this->pipeline->pipe(RouteMiddleware::class);
+        $this->pipeline->pipe(RouteMatch::class);
+        $this->pipeline->pipe(RouteDispatch::class);
+        // $this->pipeline->pipe(RouteMiddleware::class);
 
         $response = $this->pipeline->process($this->request, $this->defaultHandler);
 
