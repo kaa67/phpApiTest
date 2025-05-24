@@ -11,6 +11,7 @@ use HttpSoft\Emitter\EmitterInterface;
 use HttpSoft\Emitter\SapiEmitter;
 use Middleware\CORS;
 use Middleware\RouteMiddleware;
+use Psr\Container\ContainerInterface;
 use Repository\Repo1;
 use Repository\Repo2;
 use Repository\RepoInterface;
@@ -20,10 +21,10 @@ use Sys\Pipeline\Pipeline;
 
 return [
     ServerRequestInterface::class => fn() => (new ServerRequestCreator())->create(),
-    EmitterInterface::class => fn() => new SapiEmitter,
+    // EmitterInterface::class => new SapiEmitter,
 
     Pipeline::class => new Pipeline($this),
-    DefaultHandler::class => fn() => new DefaultHandler(),
+    // DefaultHandler::class => new DefaultHandler(),
     
     App::class => fn() => new App(
         $this->get(ServerRequestInterface::class),
@@ -32,13 +33,14 @@ return [
         $this->get(DefaultHandler::class)
     ),
 
-    // CORS::class => fn() => new CORS(),
-    RouteMiddleware::class => fn() => new RouteMiddleware($this),
-    Home::class => fn() => new Home($this->get(RepoInterface::class)),
-    // Repo1::class => fn() => new Repo1,
-    RepoInterface::class => fn() => new Repo2($this->get(Repo1::class)),
-
-    RouterInterface::class => fn() => new Router(ROUTES_PATH),
+    RouterInterface::class => new Router(ROUTES_PATH),
     RouteMatch::class => fn() => new RouteMatch($this->get(RouterInterface::class)),
     RouteDispatch::class => fn() => new RouteDispatch($this),
+
+    // // CORS::class => fn() => new CORS(),
+    // RouteMiddleware::class => fn() => new RouteMiddleware($this),
+    Home::class => fn() => new Home($this->get(RepoInterface::class)),
+    // // Repo1::class => fn() => new Repo1,
+    RepoInterface::class => fn() => new Repo2($this->get(Repo1::class)),
+
 ];

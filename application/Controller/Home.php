@@ -6,14 +6,15 @@ namespace Controller;
 
 use HttpSoft\Response\JsonResponse;
 use Repository\RepoInterface;
+use Repository\Repo1;
 
 class Home
 {
-    public function __construct(private RepoInterface $repo){}
+    // public function __construct(private RepoInterface $repo){}
 
-    public function __invoke()
+    public function __invoke(Repo1 $repo, $foo = 'qq')
     {
-        return new JsonResponse(['foo' => 'bar']);
+        return new JsonResponse(['bar' => $repo->getPhrase(), 'foo' => $foo]);
         // return $this->repo->getPhrase();
     }
 }

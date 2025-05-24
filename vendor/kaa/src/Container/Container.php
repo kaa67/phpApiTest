@@ -4,29 +4,35 @@ declare(strict_types=1);
 
 namespace Sys\Container;
 
-use ErrorException;
 use Psr\Container\ContainerInterface;
+use Closure;
+use ErrorException;
+use ReflectionClass;
 
 class Container implements ContainerInterface
 {
-    private array $definisions;
+    private array $definisions = [];
+    private Invoker $invoker;
 
     public function __construct()
     {
         $this->definisions = require_once(APPPATH . 'config/container.php');
+        $this->definisions[ContainerInterface::class] = $this;
+        $this->invoker = new Invoker($this);
     }
 
     public function get($key)
     {
-        if (!isset($this->definisions[$key])) {
+        if (!array_key_exists($key, $this->definisions)) {
             if (class_exists($key)) {
-                $this->definisions[$key] = new $key();
+                // $this->definisions[$key] = new $key();
+                $this->definisions[$key] = $this->getInstance($key);
             } else {
                 throw new ErrorException(sprintf('Undefined array key "%s"', $key));
             }
         }
 
-        if (is_callable($this->definisions[$key])) {
+        if ($this->definisions[$key] instanceof Closure) {
             $this->definisions[$key] = $this->definisions[$key]();
         }
         
@@ -36,5 +42,35 @@ class Container implements ContainerInterface
     public function has($key): bool
     {
         return isset($this->definisions[$key]);
+    }
+
+    public function call($callable, $args)
+    {
+        return $this->invoker->call($callable, $args);
+    }
+
+    private function getInstance($class)
+    {
+        $reflect_class  = new ReflectionClass($class);
+        $reflect_construct = $reflect_class->getConstructor();
+
+        if (!$reflect_construct) {
+            return new $class;
+        }
+
+        $reflect_params = $reflect_construct->getParameters();
+
+        foreach ($reflect_params as $reflect_param) {
+            $reflect_type = $reflect_param->getType();
+            $key = $reflect_type->getName();
+
+            if (!$reflect_type->isBuiltin()) {
+                $args[] = $this->get($key);
+            } else {
+                $args[] = $key;
+            }
+        }
+
+        return $reflect_class->newInstanceArgs($args);
     }
 }
