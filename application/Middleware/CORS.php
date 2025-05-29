@@ -4,14 +4,21 @@ declare(strict_types=1);
 
 namespace Middleware;
 
-use HttpSoft\Response\JsonResponse;
+use PostProcess\ResponseHeaders;
 use Psr\Http\Message\ServerRequestInterface;
+use Sys\Pipeline\PostProcess;
 
 class CORS
 {
+    public function __construct(private PostProcess $postProcess){}
+
     public function process(ServerRequestInterface $request, $handler)
     {
-        // return new JsonResponse(['foo' => 'bar']);
+        $this->postProcess->enqueue(ResponseHeaders::class)
+            ->add([
+                'X-FOO' => 'Blah-blah',
+                'X-Author' => 'Kolosoft',
+            ]);
 
         return $handler->handle($request);
     }
