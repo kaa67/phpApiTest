@@ -11,13 +11,13 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class Pipeline
 {
-    private array $middlewares = [];
+    private array $pipeline = [];
 
     public function __construct(private ContainerInterface $container){}
 
     public function pipe(string $middlewareClass): void
     {
-        $this->middlewares[] = $this->container->get($middlewareClass);
+        $this->pipeline[] = $this->container->get($middlewareClass);
     }
 
     public function process(ServerRequestInterface $request, $defaultHandler)
@@ -27,13 +27,13 @@ class Pipeline
 
     private function next($defaultHandler)
     {
-        return new class ($this->middlewares, $defaultHandler) implements RequestHandlerInterface {
+        return new class ($this->pipeline, $defaultHandler) implements RequestHandlerInterface {
 
-            public function __construct(private $middlewares, private $defaultHandler){}
+            public function __construct(private $pipeline, private $defaultHandler){}
 
             public function handle(ServerRequestInterface $request): ResponseInterface
             {
-                if (!$middleware = array_shift($this->middlewares)) {
+                if (!$middleware = array_shift($this->pipeline)) {
                     return $this->defaultHandler->handle($request);
                 }
 
