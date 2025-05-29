@@ -24,6 +24,7 @@ function myExceptionHandler ($e)
 
     if (filter_var(ini_get('display_errors'),FILTER_VALIDATE_BOOLEAN)) {
         if (accept('Accept', 'text/html') == 1) {
+            echo '<h3>' . get_class($e) . '</h3>';
             var_dump($e);
         } else {
             $err = new stdClass;
